@@ -70,7 +70,6 @@
     Public Sub SetSelectedSupplier(supplierID As Integer, supplierName As String)
         txtSupplier.Text = supplierName
         getSupplierID = supplierID
-        MessageBox.Show(getSupplierID)
     End Sub
 
     Private Sub rbDonated_CheckedChanged(sender As Object, e As EventArgs) Handles rbDonated.CheckedChanged

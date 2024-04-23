@@ -102,8 +102,8 @@ Module mdlBookInventory
 
     Public Sub AddInitialCopies(accessionNo As String, bookID As Integer)
         Using connection As MySqlConnection = ConnectionOpen()
-            Using command As New MySqlCommand("INSERT INTO tblCopies (accessionNo, bookID, acquisitionDate) 
-                                                 VALUES (@accessionNo, @bookID, NOW())", connection)
+            Using command As New MySqlCommand("INSERT INTO tblCopies (accessionNo, bookID, acquisitionDate, status) 
+                                                 VALUES (@accessionNo, @bookID, NOW(), 'Available')", connection)
                 With command.Parameters
                     .AddWithValue("@accessionNo", accessionNo)
                     .AddWithValue("@bookID", bookID)
@@ -112,6 +112,8 @@ Module mdlBookInventory
 
                 Dim dtBooks As DataTable = DisplayBooks()
                 frmBookInventory.dgBooksMainte.DataSource = dtBooks
+                Dim dtCopies As DataTable = DisplayCopies()
+                frmBookInventory.dgCopies.DataSource = dtCopies
             End Using
         End Using
     End Sub

@@ -140,22 +140,19 @@ Module mdlBorrowSetup
     Public Sub SMSBorrow(borrowerID)
         Using connection As MySqlConnection = ConnectionOpen()
             Using getPhoneNumber As New MySqlCommand("SELECT b.guardianContact, CONCAT(b.firstName, ' ', b.lastName) AS fullName
-                                  FROM tblBorrowers b
-                                  WHERE b.borrowerID = @borrowerID", connection)
+                              FROM tblBorrowers b
+                              WHERE b.borrowerID = @borrowerID", connection)
                 getPhoneNumber.Parameters.AddWithValue("@borrowerID", borrowerID)
                 Dim reader As MySqlDataReader = getPhoneNumber.ExecuteReader()
 
                 If reader.Read() Then
                     Dim number As String = reader("guardianContact").ToString()
                     Dim fullName As String = reader("fullName").ToString()
-
-                    'SMSNotif(number, $"{fullName} has borrowed {frmBorrowBooks.smsMessage.TrimEnd(", ")} from St. Mark Academy of Primarosa, Inc.")
-                    MessageBox.Show($"{number} has borrowed {frmBorrowBooks.smsMessage.TrimEnd(", ")} from St. Mark Academy of Primarosa, Inc.")
+                    SMSNotif(number, $"{fullName} borrowed {frmBorrowBooks.smsMessage} from St. Mark Academy of Primarosa, Inc.")
                 End If
             End Using
         End Using
     End Sub
-
     Public Sub BorrowBooks(copyID As Integer, borrowerID As Integer)
         Dim dateBorrowed As DateTime = DateTime.Now
         Dim dueDate As DateTime = CalculateDueDate(dateBorrowed)
@@ -252,7 +249,6 @@ Module mdlBorrowSetup
         End Using
     End Sub
 
-
     Public Sub ReturnOverdue(borrowID As Integer, penalty As Decimal)
         Using connection As MySqlConnection = ConnectionOpen()
             Using insertCommand As New MySqlCommand("INSERT INTO tblpullout (borrowID, status, penalty, returnStatus) VALUES (@borrowID, @status, @penalty, 'Overdue')", connection)
@@ -270,7 +266,7 @@ Module mdlBorrowSetup
 
     Public Sub ReturnDamaged(borrowID As Integer, penalty As Decimal)
         Using connection As MySqlConnection = ConnectionOpen()
-            Using insertCommand As New MySqlCommand("INSERT INTO tblpullout (borrowID, status, penalty, returnStatus) VALUES (@borrowID, @status, @penalty, 'Damaged/Lost')", connection)
+            Using insertCommand As New MySqlCommand("INSERT INTO tblpullout (borrowID, status, penalty, returnStatus) VALUES (@borrowID, @status, @penalty, 'Damaged')", connection)
                 insertCommand.Parameters.AddWithValue("@borrowID", borrowID)
                 insertCommand.Parameters.AddWithValue("@status", "Not Paid/Replaced")
                 insertCommand.Parameters.AddWithValue("@penalty", penalty)
@@ -282,6 +278,29 @@ Module mdlBorrowSetup
             frmIssueReturn.dgPullout.DataSource = dtPullout
         End Using
     End Sub
+
+    Public Sub ReturnLost(borrowID As Integer, penalty As Decimal)
+        Using connection As MySqlConnection = ConnectionOpen()
+            Using insertCommand As New MySqlCommand("INSERT INTO tblPullout (borrowID, status, penalty, returnStatus) VALUES (@borrowID, @status, @penalty, 'Lost'", connection)
+                insertCommand.Parameters.AddWithValue("@borrowID", borrowID)
+                insertCommand.Parameters.AddWithValue("@status", "Not paid/Replaced")
+                insertCommand.Parameters.AddWithValue("@penalty", penalty)
+                insertCommand.ExecuteNonQuery()
+            End Using
+
+            MessageBox.Show("Book has been added to pullout.")
+            Dim dtPullout As DataTable = DisplayPullout()
+            frmIssueReturn.dgPullout.DataSource = dtPullout
+        End Using
+    End Sub
+
+    'Public Function GetBookPrice() As Decimal
+    '    Using connection As MySqlConnection = ConnectionOpen()
+    '        Using command As New MySqlCommand("SELECT price FROM tblCopies WHERE accessionNo = @acn", connection)
+
+    '        End Using
+    '    End Using
+    'End Function
 
     Public Sub CalculateInOverdue(borrowID As Integer, textbox As Guna2TextBox, combobox As Guna2ComboBox)
         Dim currentDate As DateTime = DateTime.Now

@@ -25,6 +25,7 @@
 
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
         AttendanceMonitoring(txtStudentID.Text, txtFirstname.Text, txtLastname.Text, txtGrade.SelectedValue, txtSection.SelectedValue)
+        BorrowerDatatable()
     End Sub
 
 End Class

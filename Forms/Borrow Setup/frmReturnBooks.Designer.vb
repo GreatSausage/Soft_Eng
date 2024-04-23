@@ -215,6 +215,7 @@ Partial Class frmReturnBooks
         Me.txtStatus.Font = New System.Drawing.Font("Segoe UI", 10.0!)
         Me.txtStatus.ForeColor = System.Drawing.Color.FromArgb(CType(CType(44, Byte), Integer), CType(CType(62, Byte), Integer), CType(CType(80, Byte), Integer))
         Me.txtStatus.ItemHeight = 30
+        Me.txtStatus.Items.AddRange(New Object() {"Good Condition", "Overdue", "Damaged", "Lost"})
         Me.txtStatus.Location = New System.Drawing.Point(7, 93)
         Me.txtStatus.Name = "txtStatus"
         Me.txtStatus.Size = New System.Drawing.Size(348, 36)

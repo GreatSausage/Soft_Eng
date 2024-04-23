@@ -14,9 +14,7 @@
     End Sub
 
     Private Sub frmReturnBooks_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        txtStatus.Items.Add("Good Condition")
-        txtStatus.Items.Add("Damaged/Lost")
-
+        txtStatus.Items.Remove("Overdue")
         If IsBookOverdue(getBorrowID) Then
             CalculateInOverdue(getBorrowID, txtPenalty, txtStatus)
             txtStatus.Enabled = False
@@ -28,11 +26,15 @@
 
         Try
             If txtStatus.SelectedIndex = 0 Then
+                'good condition
                 ReturnBookInGood(getBorrowID, copyID, txtStudentID.Text)
-            ElseIf txtStatus.SelectedIndex = 2 Then
-                ReturnOverdue(getBorrowID, txtPenalty.Text)
             ElseIf txtStatus.SelectedIndex = 1 Then
+                'overdue condition
+                ReturnOverdue(getBorrowID, txtPenalty.Text)
+            ElseIf txtStatus.SelectedIndex = 2 Then
+                'damaged condition
                 ReturnDamaged(getBorrowID, txtPenalty.Text)
+            ElseIf txtStatus.SelectedIndex = 3 Then
             End If
 
             getBorrowID = Nothing

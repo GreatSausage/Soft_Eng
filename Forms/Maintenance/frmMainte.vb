@@ -138,6 +138,7 @@
         GradeDatatable()
         SectionDatatable()
         BorrowerDatatable()
+        BorrowerDatatable()
     End Sub
 
 End Class

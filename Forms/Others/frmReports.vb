@@ -26,19 +26,43 @@ Public Class frmReports
 
         Dim dt As DataTable = DisplayReport()
 
-        For Each column As DataColumn In dt.Columns
-            e.Graphics.DrawString(column.ColumnName, font, brush, xPos, yPos)
-            xPos += e.Graphics.MeasureString(column.ColumnName, font).Width + 10
+        ' Define column widths and alignment
+        Dim columnWidths As New List(Of Single)({110, 100, 100, 100, 140, 140, 100}) ' Adjust widths as needed
+        Dim columnAlignments As New List(Of String)({"Left", "Left", "Left", "Left", "Left", "Left", "Right"})
+        Dim columnHeaders As New List(Of String)({"ISBN", "Book Title", "Authors", "Fullname", "Date Borrowed", "Date Returned", "Penalty"})
+
+        ' Display column headers
+        For i As Integer = 0 To columnHeaders.Count - 1
+            Dim columnText As String = columnHeaders(i)
+            Dim alignment As String = columnAlignments(i)
+            Dim columnWidth As Single = columnWidths(i)
+            If alignment = "Right" Then
+                xPos += columnWidth - e.Graphics.MeasureString(columnText, font).Width
+            End If
+            e.Graphics.DrawString(columnText, font, brush, xPos, yPos)
+            If alignment = "Center" OrElse alignment = "Right" Then
+                xPos -= columnWidth - e.Graphics.MeasureString(columnText, font).Width
+            End If
+            xPos += columnWidth + 10
         Next
 
         yPos += rowHeight
 
+        ' Display rows
         For Each row As DataRow In dt.Rows
             xPos = printArea.Left
-            For Each column As DataColumn In dt.Columns
-                Dim cellValue As String = row(column).ToString()
-                e.Graphics.DrawString(cellValue, font, brush, xPos, yPos)
-                xPos += e.Graphics.MeasureString(cellValue, font).Width + 10
+            For i As Integer = 0 To dt.Columns.Count - 1
+                Dim columnText As String = row(i).ToString()
+                Dim alignment As String = columnAlignments(i)
+                Dim columnWidth As Single = columnWidths(i)
+                If alignment = "Right" Then
+                    xPos += columnWidth - e.Graphics.MeasureString(columnText, font).Width
+                End If
+                e.Graphics.DrawString(columnText, font, brush, xPos, yPos)
+                If alignment = "Center" OrElse alignment = "Right" Then
+                    xPos -= columnWidth - e.Graphics.MeasureString(columnText, font).Width
+                End If
+                xPos += columnWidth + 10
             Next
             yPos += rowHeight
         Next
@@ -46,9 +70,18 @@ Public Class frmReports
     End Sub
 
 
+
+
+
+
     Private Sub PrintReport()
+        ' Set landscape orientation
+        printDocument.DefaultPageSettings.Landscape = True
+
+        ' Attach event handler
         AddHandler printDocument.PrintPage, AddressOf PrintDocument_PrintPage
 
+        ' Show print preview dialog
         printPreviewDialog.Document = printDocument
         printPreviewDialog.ShowDialog()
     End Sub
