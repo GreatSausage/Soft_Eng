@@ -294,13 +294,31 @@ Module mdlBorrowSetup
         End Using
     End Sub
 
-    'Public Function GetBookPrice() As Decimal
-    '    Using connection As MySqlConnection = ConnectionOpen()
-    '        Using command As New MySqlCommand("SELECT price FROM tblCopies WHERE accessionNo = @acn", connection)
+    Public Function GetBookType(acn As String) As String
+        Using connection As MySqlConnection = ConnectionOpen()
+            Using command As New MySqlCommand("SELECT acquisitionType FROM tblCopies WHERE accessionNo = @acn", connection)
+                command.Parameters.AddWithValue("@acn", acn)
+                Return Convert.ToString(command.ExecuteScalar())
+            End Using
+        End Using
+    End Function
 
-    '        End Using
-    '    End Using
-    'End Function
+    Public Function GetBookPenalty() As Decimal
+        Using connection As MySqlConnection = ConnectionOpen()
+            Using command As New MySqlCommand("SELECT damagedLostPenalty FROM tblMaintenance WHERE id = 1", connection)
+                Return Convert.ToDecimal(command.ExecuteScalar())
+            End Using
+        End Using
+    End Function
+
+    Public Function GetBookPrice(acn As String) As Decimal
+        Using connection As MySqlConnection = ConnectionOpen()
+            Using command As New MySqlCommand("SELECT price FROM tblCopies WHERE accessionNo = @acn", connection)
+                command.Parameters.AddWithValue("@acn", acn)
+                Return Convert.ToDecimal(command.ExecuteScalar())
+            End Using
+        End Using
+    End Function
 
     Public Sub CalculateInOverdue(borrowID As Integer, textbox As Guna2TextBox, combobox As Guna2ComboBox)
         Dim currentDate As DateTime = DateTime.Now

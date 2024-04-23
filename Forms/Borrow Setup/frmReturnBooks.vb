@@ -44,4 +44,31 @@
         End Try
     End Sub
 
+    Private Sub txtStatus_SelectedIndexChanged(sender As Object, e As EventArgs) Handles txtStatus.SelectedIndexChanged
+        If txtStatus.SelectedIndex = 1 Then
+            Dim type As String = GetBookType(txtAcn.Text)
+            If type = "Purchased" Then
+                txtPenalty.ReadOnly = True
+                txtPenalty.Text = GetBookPrice(txtAcn.Text)
+            ElseIf type = "Donated" Then
+                txtPenalty.Text = GetBookPenalty()
+                txtPenalty.ReadOnly = True
+            End If
+
+        ElseIf txtStatus.SelectedIndex = 0 Then
+            txtPenalty.Clear()
+            txtPenalty.ReadOnly = False
+
+        ElseIf txtStatus.SelectedIndex = 2 Then
+            Dim type As String = GetBookType(txtAcn.Text)
+            If type = "Purchased" Then
+                txtPenalty.Text = GetBookPrice(txtAcn.Text)
+                txtPenalty.ReadOnly = True
+            ElseIf type = "Donated" Then
+                txtPenalty.Text = GetBookPenalty()
+                txtPenalty.ReadOnly = True
+            End If
+
+        End If
+    End Sub
 End Class

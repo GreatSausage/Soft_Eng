@@ -20,7 +20,6 @@
         txtSupplier.ValueMember = "supplierID"
         txtSupplier.DisplayMember = "supplierName"
         getSupplierID = txtSupplier.SelectedValue
-        MessageBox.Show(getSupplierID)
     End Sub
 
     Private Sub btnClose_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles btnClose.LinkClicked
